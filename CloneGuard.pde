@@ -6,7 +6,10 @@ int ysp;
 Shot shots[];
 int shotcount;
 int maxshots;
+
 boolean jumping;
+int jumpvelocity; //the starting speed of the jump
+double jumpspeed; //the current speed of vertical movement
 
 boolean keys[]; //I'd love to use hashes instead.
 
@@ -30,10 +33,22 @@ void setup(){
   }
   
   jumping = false;
+  jumpvelocity = -10;
+  jumpspeed = 0;
 }
 
 void draw(){
   background(000);
+
+  if(jumping)
+    jumpspeed += 0.5;
+  if(ypos > height - 100){
+    ypos = height - 100;
+    jumpspeed = 0;
+    jumping = false;
+  }
+  ypos += jumpspeed;
+
   image(a, xpos,ypos);
   if(keys[0] || keys[1])
     xpos += xsp;
@@ -66,8 +81,10 @@ void keyPressed(){
     shoot();
     break;
   case 'z':
-    if(!keys[3])
-      jumping = true;
+    if(!keys[3]){
+      //jumping = true;
+      jump();
+    }
     keys[3] = true;
     System.out.println("Z");
     break;
@@ -94,7 +111,7 @@ void keyReleased(){
     break;
   case 'z':
     if(keys[3])
-      jumping = false;
+      //jumping = false;
     keys[3] = false;
     System.out.println("Z*");
     break;
@@ -106,4 +123,11 @@ void keyReleased(){
 void shoot(){
   shots[shotcount].set(xpos - 15,ypos + 30,true);
   shotcount = (shotcount + 1) % maxshots;
+}
+
+void jump(){
+  if(!jumping){
+    jumping = true;
+    jumpspeed = jumpvelocity;
+  }
 }
