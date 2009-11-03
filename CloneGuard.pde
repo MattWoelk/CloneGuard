@@ -2,7 +2,6 @@ PImage a;
 int xpos;
 int ypos;
 int xsp;
-int ysp;
 Shot shots[];
 int shotcount;
 int maxshots;
@@ -13,18 +12,20 @@ double jumpspeed; //the current speed of vertical movement
 
 boolean keys[]; //I'd love to use hashes instead.
 
+Level level;
+
 void setup(){
-  size(800,600);
+  size(600,400);
   a = loadImage("images/1.png");
   xpos = 500;
   ypos = 200;
   xsp = 0;
-  ysp = 0;
+
   keys = new boolean[4];
   for(int i = 0; i < 4; i++){
     keys[i] = false;
   }
-
+  
   maxshots = 30;
   shots = new Shot[maxshots];
   shotcount = 0;
@@ -35,25 +36,27 @@ void setup(){
   jumping = false;
   jumpvelocity = -10;
   jumpspeed = 0;
+  
+  level = new Level(0);
 }
 
 void draw(){
   background(000);
 
+  level.paint();
+  
   if(jumping)
     jumpspeed += 0.5;
-  if(ypos > height - 100){
+  if(ypos + jumpspeed > height - 100){
     ypos = height - 100;
     jumpspeed = 0;
     jumping = false;
   }
   ypos += jumpspeed;
-
+  
   image(a, xpos,ypos);
   if(keys[0] || keys[1])
     xpos += xsp;
-  if(!keys[0])
-    ypos += ysp;
   for(int i = 0; i < maxshots; i++){
     shots[i].paint();
   }
@@ -66,18 +69,15 @@ void keyPressed(){
     if(!keys[0])
       xsp -= 5;
     keys[0] = true;
-    System.out.println("J");
     break;
   case 'l':
     if(!keys[1])
       xsp += 5;
     keys[1] = true;
-    System.out.println("L");
     break;
   case 'x':
     if(!keys[2])
       keys[2] = true;
-    System.out.println("X");
     shoot();
     break;
   case 'z':
@@ -86,12 +86,10 @@ void keyPressed(){
       jump();
     }
     keys[3] = true;
-    System.out.println("Z");
     break;
   default:
     break;
   }
-    
 }
 
 void keyReleased(){
@@ -101,19 +99,16 @@ void keyReleased(){
     if(keys[0])
       xsp += 5;
     keys[0] = false;
-    System.out.println("J*");
     break;
   case 'l':
     if(keys[1])
       xsp -= 5;
     keys[1] = false;
-    System.out.println("L*");
     break;
   case 'z':
     if(keys[3])
       //jumping = false;
     keys[3] = false;
-    System.out.println("Z*");
     break;
   default:
     break;
