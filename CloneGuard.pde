@@ -1,11 +1,17 @@
-PImage a;
+PImage sprite;
+int spriteHeight;
+
+//MOVEMENT
 int xpos;
 int ypos;
 int xsp;
+
+//SHOOTING
 Shot shots[];
 int shotcount;
 int maxshots;
 
+//JUMPING
 boolean jumping;
 int jumpvelocity; //the starting speed of the jump
 double jumpspeed; //the current speed of vertical movement
@@ -16,16 +22,20 @@ Level level;
 
 void setup(){
   size(600,400);
-  a = loadImage("images/1.png");
+  sprite = loadImage("images/1.png");
+  spriteHeight = 50;
+
   xpos = 500;
   ypos = 200;
   xsp = 0;
 
+  //INPUT
   keys = new boolean[4];
   for(int i = 0; i < 4; i++){
     keys[i] = false;
   }
   
+  //SHOOTING
   maxshots = 30;
   shots = new Shot[maxshots];
   shotcount = 0;
@@ -33,34 +43,40 @@ void setup(){
     shots[i] = new Shot();
   }
   
-  jumping = false;
+  //JUMPING
+  jumping = true;
   jumpvelocity = -10;
   jumpspeed = 0;
   
+  //LEVEL
   level = new Level(0);
 }
 
+
 void draw(){
   background(000);
-
   level.paint();
   
+  //JUMPING
   if(jumping)
     jumpspeed += 0.5;
-  if(ypos + jumpspeed > height - 100){
-    ypos = height - 100;
+  //COLLISION
+  if(level.collide((int)(ypos + jumpspeed + spriteHeight),xpos)){
+    ypos = level.topOfBrick(xpos,ypos);
     jumpspeed = 0;
     jumping = false;
   }
   ypos += jumpspeed;
   
-  image(a, xpos,ypos);
+  //WALKING
+  image(sprite, xpos,ypos);
   if(keys[0] || keys[1])
     xpos += xsp;
   for(int i = 0; i < maxshots; i++){
     shots[i].paint();
   }
 }
+
 
 void keyPressed(){
   char k = (char)key;
@@ -92,6 +108,7 @@ void keyPressed(){
   }
 }
 
+
 void keyReleased(){
   char k = (char)key;
   switch(k){
@@ -115,10 +132,12 @@ void keyReleased(){
   }
 }
 
+
 void shoot(){
   shots[shotcount].set(xpos - 15,ypos + 30,true);
   shotcount = (shotcount + 1) % maxshots;
 }
+
 
 void jump(){
   if(!jumping){

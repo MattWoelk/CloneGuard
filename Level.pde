@@ -33,4 +33,15 @@ public class Level{
       }
     }
   }
+
+  //to see if the x,y point is within a brick. 
+  //(this will have to be changed if ever the character is falling REALLY fast.)
+  public boolean collide(int x, int y){
+    return blocks[floor(y/blockSize)][floor(x/blockSize)] == 'x';
+  }
+
+  //to be used in the same frame (of time) as collide, because the x value isn't used.
+  public int topOfBrick(int x, int y){
+    return (int)Math.floor(y/blockSize)*blockSize;
+  }
 }
