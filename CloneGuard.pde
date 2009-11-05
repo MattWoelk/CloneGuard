@@ -10,6 +10,7 @@ int xsp;
 Shot shots[];
 int shotcount;
 int maxshots;
+int shotTimer;
 
 //JUMPING
 boolean jumping;
@@ -42,6 +43,7 @@ void setup(){
   for(int i = 0; i < maxshots; i++){
     shots[i] = new Shot();
   }
+  shotTimer = 0;
   
   //JUMPING
   jumping = true;
@@ -75,6 +77,16 @@ void draw(){
   for(int i = 0; i < maxshots; i++){
     shots[i].paint();
   }
+
+  //SHOOTING
+  if (keys[2]){
+    shotTimer++;
+    if (shotTimer > 9)
+    {
+      shotTimer = 0;
+      shoot();
+    }
+  }
 }
 
 
@@ -94,7 +106,6 @@ void keyPressed(){
   case 'x':
     if(!keys[2])
       keys[2] = true;
-    shoot();
     break;
   case 'z':
     if(!keys[3]){
@@ -121,6 +132,13 @@ void keyReleased(){
     if(keys[1])
       xsp -= 5;
     keys[1] = false;
+    break;
+  case 'x':
+    if (keys[2] = true) 
+    {
+      keys[2] = false;
+      shotTimer = 0;
+    }
     break;
   case 'z':
     if(keys[3])
