@@ -4,20 +4,22 @@ int spriteHeight;
 //MOVEMENT
 int xpos;
 int ypos;
-int xsp;
+int xsp; //speed in the x direction.
 
 //SHOOTING
 Shot shots[];
 int shotcount;
-int maxshots;
+int MAXSHOTS;
 
 //JUMPING
 boolean jumping;
-int jumpvelocity; //the starting speed of the jump
+int JUMPVELOCITY; //the starting speed of the jump
 double jumpspeed; //the current speed of vertical movement
 
+//INPUT
 boolean keys[]; //I'd love to use hashes instead.
 
+//LEVEL
 Level level;
 
 void setup(){
@@ -36,16 +38,16 @@ void setup(){
   }
   
   //SHOOTING
-  maxshots = 30;
-  shots = new Shot[maxshots];
+  MAXSHOTS = 30;
+  shots = new Shot[MAXSHOTS];
   shotcount = 0;
-  for(int i = 0; i < maxshots; i++){
+  for(int i = 0; i < MAXSHOTS; i++){
     shots[i] = new Shot();
   }
   
   //JUMPING
   jumping = true;
-  jumpvelocity = -10;
+  JUMPVELOCITY = -10;
   jumpspeed = 0;
   
   //LEVEL
@@ -56,15 +58,27 @@ void setup(){
 void draw(){
   background(000);
   level.paint();
-  
+
   //JUMPING
   if(jumping)
     jumpspeed += 0.5;
-  //COLLISION
-  if(level.collide((int)(ypos + jumpspeed + spriteHeight),xpos)){
+  //COLLISION     are we going to collide if we move? if yes, move to a safe location, if not, give'er.
+
+
+
+  ////////////////EDITING HERE/////////////////////////
+  ////////////////EDITING HERE/////////////////////////
+  ////////////////EDITING HERE/////////////////////////
+  ////////////////EDITING HERE/////////////////////////
+  ////////////////EDITING HERE/////////////////////////
+  ////////////////EDITING HERE/////////////////////////
+  ////////////////EDITING HERE/////////////////////////
+  if(level.ycollide((int)(ypos + jumpspeed + spriteHeight),xpos)){
     ypos = level.topOfBrick(xpos,ypos);
     jumpspeed = 0;
     jumping = false;
+  }else{
+    jumping = true;//eventually we want jumping to always be true???
   }
   ypos += jumpspeed;
   
@@ -72,7 +86,7 @@ void draw(){
   image(sprite, xpos,ypos);
   if(keys[0] || keys[1])
     xpos += xsp;
-  for(int i = 0; i < maxshots; i++){
+  for(int i = 0; i < MAXSHOTS; i++){
     shots[i].paint();
   }
 }
@@ -135,13 +149,13 @@ void keyReleased(){
 
 void shoot(){
   shots[shotcount].set(xpos - 15,ypos + 30,true);
-  shotcount = (shotcount + 1) % maxshots;
+  shotcount = (shotcount + 1) % MAXSHOTS;
 }
 
 
 void jump(){
   if(!jumping){
     jumping = true;
-    jumpspeed = jumpvelocity;
+    jumpspeed = JUMPVELOCITY;
   }
 }

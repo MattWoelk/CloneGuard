@@ -1,10 +1,10 @@
 public class Level{
   String lines[];
   char blocks[][]; 
-  int blockSize;
+  int BLOCKSIZE;
 
   public Level(int num){
-    blockSize = 60;
+    BLOCKSIZE = 60;
     blocks = new char[100][100];
 
     load(num);
@@ -15,7 +15,8 @@ public class Level{
     for(int i = 0; i < lines.length; i++){
       char temp[] = new char[100];
       for(int j = 0; j < lines[i].length(); j++){
-          blocks[j][i] = lines[i].charAt(j);
+        //X AND Y AND BACKWARDS...........
+        blocks[j][i] = lines[i].charAt(j);
       }
     }
   }
@@ -23,25 +24,26 @@ public class Level{
   public void paint(){
     for(int i = 0; i < 30; i++){
       for(int j = 0; j < 20; j++){
-        if(blocks[i][j] == 'o'){
+        if(blocks[i][j] == '-'){
           fill(255);
         }else if(blocks[i][j] == 'x'){
           fill(100);
         }else
           fill(0);
-        rect(i*blockSize,j*blockSize,blockSize,blockSize);
+        rect(i*BLOCKSIZE,j*BLOCKSIZE,BLOCKSIZE,BLOCKSIZE);
       }
     }
   }
 
   //to see if the x,y point is within a brick. 
-  //(this will have to be changed if ever the character is falling REALLY fast.)
-  public boolean collide(int x, int y){
-    return blocks[floor(y/blockSize)][floor(x/blockSize)] == 'x';
+  //(this will have to be changed if ever the character is falling REALLY fast....maybe)
+  public boolean ycollide(int x, int y){
+    //X AND Y AND BACKWARDS...........
+    return blocks[floor(y/BLOCKSIZE)][floor(x/BLOCKSIZE)] == 'x';
   }
 
   //to be used in the same frame (of time) as collide, because the x value isn't used.
   public int topOfBrick(int x, int y){
-    return (int)Math.floor(y/blockSize)*blockSize;
+    return ceil(y/BLOCKSIZE)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
   }
 }

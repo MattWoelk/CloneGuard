@@ -2,19 +2,19 @@ public class Shot{
   boolean active;
   int x;
   int y;
-  int speed;
+  int SPEED;
   PImage img;
   
   public Shot(){
     x = 0;
     y = 0;
-    speed = -8;
+    SPEED = -8;
     img = loadImage("images/peew.png");
   }
 
   public void paint(){
     if(active){
-      x += speed;
+      x += SPEED;
       image(img, x,y);
     } 
 

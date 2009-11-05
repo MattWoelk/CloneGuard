@@ -1,6 +1,7 @@
-oooooooooooo
-oooooooooooo
-xxoooooooooo
-oooooooooooo
-xxxxxooooooo
+------------
+------------
+xx----------
+------------
+xxxxx-------
+xxxxxxxxxxxx
 xxxxxxxxxxxx
