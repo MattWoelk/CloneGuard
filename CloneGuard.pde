@@ -137,7 +137,7 @@ void keyReleased(){
     if (keys[2] = true) 
     {
       keys[2] = false;
-      shotTimer = 0;
+      shotTimer = 10;
     }
     break;
   case 'z':
