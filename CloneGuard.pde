@@ -13,7 +13,7 @@ int MAXSHOTS;
 int shotTimer;
 
 //JUMPING
-boolean jumping;
+boolean jumping;  //indicates whether the character is in the air or not.
 int JUMPVELOCITY; //the starting speed of the jump
 double jumpspeed; //the current speed of vertical movement
 
@@ -26,7 +26,7 @@ Level level;
 void setup(){
   size(600,400);
   sprite = loadImage("images/1.png");
-  spriteHeight = 50;
+  spriteHeight = 60;
 
   xpos = 500;
   ypos = 200;
@@ -45,7 +45,7 @@ void setup(){
   for(int i = 0; i < MAXSHOTS; i++){
     shots[i] = new Shot();
   }
-  shotTimer = 0;
+  shotTimer = 100;
   
   //JUMPING
   jumping = true;
@@ -63,40 +63,35 @@ void draw(){
 
   //JUMPING
   if(jumping)
-    jumpspeed += 0.5;
-  //COLLISION     are we going to collide if we move? if yes, move to a safe location, if not, give'er.
-
-
-
-  ////////////////EDITING HERE/////////////////////////
-  ////////////////EDITING HERE/////////////////////////
-  ////////////////EDITING HERE/////////////////////////
-  ////////////////EDITING HERE/////////////////////////
-  ////////////////EDITING HERE/////////////////////////
-  ////////////////EDITING HERE/////////////////////////
-  ////////////////EDITING HERE/////////////////////////
-  if(level.ycollide((int)(ypos + jumpspeed + spriteHeight),xpos)){
-    ypos = level.topOfBrick(xpos,ypos);
+    jumpspeed += 0.5;//0.5
+  
+  line(xpos,(int)(ypos + jumpspeed + spriteHeight),xpos+50,(int)(ypos + jumpspeed + spriteHeight));
+  line(xpos,ypos,xpos+50,ypos);
+  
+  //COLLISION     are we going to collide if we move? if yes, move to a safe location, if not, move.
+  if(level.ycollide(xpos,(int)(ypos + jumpspeed + spriteHeight))){
+    ypos = level.topOfBrick(xpos,(int)(ypos + jumpspeed + spriteHeight));
     jumpspeed = 0;
     jumping = false;
+    System.out.println("1");
   }else{
-    jumping = true;//eventually we want jumping to always be true???
+    jumping = true;
+    System.out.println("2");
   }
   ypos += jumpspeed;
   
   //WALKING
-  image(sprite, xpos,ypos);
+  image(sprite, xpos, ypos);
   if(keys[0] || keys[1])
     xpos += xsp;
   for(int i = 0; i < MAXSHOTS; i++){
     shots[i].paint();
   }
-
+  
   //SHOOTING
   if (keys[2]){
     shotTimer++;
-    if (shotTimer > 9)
-    {
+    if (shotTimer > 9){
       shotTimer = 0;
       shoot();
     }
@@ -148,8 +143,7 @@ void keyReleased(){
     keys[1] = false;
     break;
   case 'x':
-    if (keys[2] = true) 
-    {
+    if (keys[2] = true){
       keys[2] = false;
       shotTimer = 10;
     }

@@ -38,12 +38,11 @@ public class Level{
   //to see if the x,y point is within a brick. 
   //(this will have to be changed if ever the character is falling REALLY fast....maybe)
   public boolean ycollide(int x, int y){
-    //X AND Y AND BACKWARDS...........
-    return blocks[floor(y/BLOCKSIZE)][floor(x/BLOCKSIZE)] == 'x';
+    return blocks[floor(x/BLOCKSIZE)][floor(y/BLOCKSIZE)] == 'x';
   }
 
   //to be used in the same frame (of time) as collide, because the x value isn't used.
   public int topOfBrick(int x, int y){
-    return ceil(y/BLOCKSIZE)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
+    return ceil(y/BLOCKSIZE - 1)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
   }
 }
