@@ -1,5 +1,9 @@
+//It is currently possible to jump while not yet touching the ground.
+
+
 PImage sprite;
 int spriteHeight;
+int spriteWidth;
 
 //MOVEMENT
 int xpos;
@@ -27,6 +31,7 @@ void setup(){
   size(600,400);
   sprite = loadImage("images/1.png");
   spriteHeight = 60;
+  spriteWidth = 60;
 
   xpos = 500;
   ypos = 200;
@@ -65,30 +70,29 @@ void draw(){
   if(jumping)
     jumpspeed += 0.5;//0.5
   
-  line(xpos,(int)(ypos + jumpspeed + spriteHeight),xpos+50,(int)(ypos + jumpspeed + spriteHeight));
-  line(xpos,ypos,xpos+50,ypos);
-  
   //COLLISION     are we going to collide if we move? if yes, move to a safe location, if not, move.
-  if(level.ycollide(xpos,(int)(ypos + jumpspeed + spriteHeight))){
-    ypos = level.topOfBrick(xpos,(int)(ypos + jumpspeed + spriteHeight));
+  if(level.solidBlock(xpos,(int)(ypos + jumpspeed + spriteHeight))){
+    ypos = level.topOfBlock(xpos,(int)(ypos + jumpspeed + spriteHeight));
     jumpspeed = 0;
     jumping = false;
-    System.out.println("1");
   }else{
     jumping = true;
-    System.out.println("2");
   }
   ypos += jumpspeed;
   
   //WALKING
   image(sprite, xpos, ypos);
-  if(keys[0] || keys[1])
+  if((keys[0] || keys[1]) && !level.solidBlock((int)(Math.signum(xsp)*spriteWidth/2) + (int)(spriteWidth/2) + (xpos + xsp),ypos)){
     xpos += xsp;
+  }
+  //else if(level.solidBlock(xpos + xsp,ypos))
+    //xpos = level.sideOfBlock(xpos + xsp,ypos);
+
+  
+  //SHOOTING
   for(int i = 0; i < MAXSHOTS; i++){
     shots[i].paint();
   }
-  
-  //SHOOTING
   if (keys[2]){
     shotTimer++;
     if (shotTimer > 9){
