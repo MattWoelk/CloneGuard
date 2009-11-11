@@ -3,5 +3,5 @@ x--------xxx
 xxx------xxx
 x--------xxx
 xxxxx---xxxx
-xxxxxxxxxxxx
+xxxxx---xxxx
 xxxxxxxxxxxx

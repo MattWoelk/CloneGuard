@@ -8,7 +8,8 @@ int spriteWidth;
 //MOVEMENT
 int xpos;
 int ypos;
-int xsp; //speed in the x direction.
+int xsp; //curret speed in the x direction.
+int XVELOCITY; //the starting walk speed.
 
 //SHOOTING
 Shot shots[];
@@ -36,6 +37,7 @@ void setup(){
   xpos = 500;
   ypos = 200;
   xsp = 0;
+  XVELOCITY = 5; 
 
   //INPUT
   keys = new boolean[4];
@@ -65,13 +67,23 @@ void setup(){
 void draw(){
   background(000);
   level.paint();
+  fill(255);
+  rect(xpos,ypos,spriteWidth,spriteHeight);
+  image(sprite, xpos, ypos);
 
+  //WALKING AND SIDE COLLISION
+  if((keys[0] || keys[1]) && !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2) + (int)(spriteWidth/2) + (xpos + xsp),ypos)){
+    xpos += xsp;
+  }
+                          //right now the side collision and the floor collision are not agreeing with their xpos, this is causing
+                          //...the ability to jump onto ledges that are higher than you can jump.
   //JUMPING
   if(jumping)
     jumpspeed += 0.5;//0.5
   
-  //COLLISION     are we going to collide if we move? if yes, move to a safe location, if not, move.
-  if(level.solidBlock(xpos,(int)(ypos + jumpspeed + spriteHeight))){
+  //JUMPING AND GROUND COLLISION
+  if(level.isSolidBlock(xpos,(int)(ypos + jumpspeed + spriteHeight)) || 
+      level.isSolidBlock(xpos + spriteWidth,(int)(ypos + jumpspeed + spriteHeight))){
     ypos = level.topOfBlock(xpos,(int)(ypos + jumpspeed + spriteHeight));
     jumpspeed = 0;
     jumping = false;
@@ -79,15 +91,6 @@ void draw(){
     jumping = true;
   }
   ypos += jumpspeed;
-  
-  //WALKING
-  image(sprite, xpos, ypos);
-  if((keys[0] || keys[1]) && !level.solidBlock((int)(Math.signum(xsp)*spriteWidth/2) + (int)(spriteWidth/2) + (xpos + xsp),ypos)){
-    xpos += xsp;
-  }
-  //else if(level.solidBlock(xpos + xsp,ypos))
-    //xpos = level.sideOfBlock(xpos + xsp,ypos);
-
   
   //SHOOTING
   for(int i = 0; i < MAXSHOTS; i++){
@@ -108,12 +111,12 @@ void keyPressed(){
   switch(k){
   case 'j':
     if(!keys[0])
-      xsp -= 5;
+      xsp -= XVELOCITY;
     keys[0] = true;
     break;
   case 'l':
     if(!keys[1])
-      xsp += 5;
+      xsp += XVELOCITY;
     keys[1] = true;
     break;
   case 'x':
@@ -138,12 +141,12 @@ void keyReleased(){
   switch(k){
   case 'j':
     if(keys[0])
-      xsp += 5;
+      xsp += XVELOCITY;
     keys[0] = false;
     break;
   case 'l':
     if(keys[1])
-      xsp -= 5;
+      xsp -= XVELOCITY;
     keys[1] = false;
     break;
   case 'x':
@@ -154,7 +157,6 @@ void keyReleased(){
     break;
   case 'z':
     if(keys[3])
-      //jumping = false;
     keys[3] = false;
     break;
   default:
