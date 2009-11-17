@@ -2,6 +2,7 @@
 
 
 PImage sprite;
+PImage spriteMan[];
 int spriteHeight;
 int spriteWidth;
 
@@ -10,6 +11,7 @@ int xpos;
 int ypos;
 int xsp; //curret speed in the x direction.
 int XVELOCITY; //the starting walk speed.
+boolean facingLeft;
 
 //SHOOTING
 Shot shots[];
@@ -30,7 +32,13 @@ Level level;
 
 void setup(){
   size(600,400);
+
+  //SPRITE
   sprite = loadImage("images/1.png");
+  spriteMan = new PImage[4];
+  for(int i = 0; i < 4; i++){
+    spriteMan[i] = loadImage("images/" + (1 + i) + ".png");
+  }
   spriteHeight = 60;
   spriteWidth = 60;
 
@@ -38,6 +46,8 @@ void setup(){
   ypos = 200;
   xsp = 0;
   XVELOCITY = 5; 
+
+  facingLeft = true;
 
   //INPUT
   keys = new boolean[4];
@@ -69,7 +79,11 @@ void draw(){
   level.paint();
   fill(255);
   rect(xpos,ypos,spriteWidth,spriteHeight);
-  image(sprite, xpos, ypos);
+  if(facingLeft){
+    image(spriteMan[0], xpos, ypos);
+  }else{
+    image(spriteMan[1], xpos,ypos);
+  }
 
   //WALKING AND SIDE COLLISION
   if((keys[0] || keys[1]) && !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2) + (int)(spriteWidth/2) + (xpos + xsp),ypos)){
@@ -110,13 +124,17 @@ void keyPressed(){
   char k = (char)key;
   switch(k){
   case 'j':
-    if(!keys[0])
+    if(!keys[0]){
       xsp -= XVELOCITY;
+      facingLeft = true;
+    }
     keys[0] = true;
     break;
   case 'l':
-    if(!keys[1])
+    if(!keys[1]){
       xsp += XVELOCITY;
+      facingLeft = false;
+    }
     keys[1] = true;
     break;
   case 'x':
@@ -166,7 +184,14 @@ void keyReleased(){
 
 
 void shoot(){
-  shots[shotcount].set(xpos - 15,ypos + 30,true);
+  shots[shotcount].set(xpos,ypos + 30,true);
+  if(!facingLeft){
+    shots[shotcount].shootRight(); //sets direction of shot.
+    shots[shotcount].x += (int)spriteWidth/2;
+  }else{
+    shots[shotcount].shootLeft();
+    shots[shotcount].x -= (int)spriteWidth/2;
+  }
   shotcount = (shotcount + 1) % MAXSHOTS;
 }
 

@@ -1,7 +1,7 @@
 public class Shot{
   boolean active;
-  int x;
-  int y;
+  public int x;
+  public int y;
   int SPEED;
   PImage img;
   
@@ -10,6 +10,14 @@ public class Shot{
     y = 0;
     SPEED = -8;
     img = loadImage("images/peew.png");
+  }
+
+  public void shootRight(){
+    SPEED = Math.abs(SPEED);
+  }
+
+  public void shootLeft(){
+    SPEED = -1 * Math.abs(SPEED);
   }
 
   public void paint(){
