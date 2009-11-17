@@ -11,7 +11,7 @@ int xpos;
 int ypos;
 int xsp; //curret speed in the x direction.
 int XVELOCITY; //the starting walk speed.
-boolean facingLeft;
+boolean facingLeft; //ISSUE: 
 
 //SHOOTING
 Shot shots[];
@@ -36,8 +36,11 @@ void setup(){
   //SPRITE
   sprite = loadImage("images/1.png");
   spriteMan = new PImage[4];
-  for(int i = 0; i < 4; i++){
-    spriteMan[i] = loadImage("images/" + (1 + i) + ".png");
+  for(int i = 0; i < 4; i+=2){
+    spriteMan[i] = loadImage("images/a" + (i) + ".png");
+  }
+  for(int i = 0; i < 4; i+=2){
+    spriteMan[i+1] = loadImage("images/a" + (i) + "b.png");
   }
   spriteHeight = 60;
   spriteWidth = 60;
@@ -75,14 +78,25 @@ void setup(){
 
 
 void draw(){
+  if(xsp > 0)
+    facingLeft = false;
+  else if (xsp < 0)
+    facingLeft = true;
+
   background(000);
   level.paint();
   fill(255);
   rect(xpos,ypos,spriteWidth,spriteHeight);
   if(facingLeft){
-    image(spriteMan[0], xpos, ypos);
+    if(jumping)
+      image(spriteMan[2], xpos, ypos,spriteWidth,spriteHeight);
+    else
+      image(spriteMan[0], xpos, ypos,spriteWidth,spriteHeight);
   }else{
-    image(spriteMan[1], xpos,ypos);
+    if(jumping)
+      image(spriteMan[3], xpos,ypos,spriteWidth,spriteHeight);
+    else
+      image(spriteMan[1], xpos,ypos,spriteWidth,spriteHeight);
   }
 
   //WALKING AND SIDE COLLISION
@@ -126,14 +140,12 @@ void keyPressed(){
   case 'j':
     if(!keys[0]){
       xsp -= XVELOCITY;
-      facingLeft = true;
     }
     keys[0] = true;
     break;
   case 'l':
     if(!keys[1]){
       xsp += XVELOCITY;
-      facingLeft = false;
     }
     keys[1] = true;
     break;
