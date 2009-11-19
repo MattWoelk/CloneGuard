@@ -45,14 +45,14 @@ public class Level{
   }
 
   //to see if the x,y point is within a block. 
-  public boolean isSolidBlock(int x, int y){
+  public boolean isSolidBlock(double x, double y){
     //NB: (this will have to be changed if ever the character is falling REALLY fast....maybe)
-    return blocks[floor(x/BLOCKSIZE)][floor(y/BLOCKSIZE)] == 'x';
+    return blocks[floor((float)x/BLOCKSIZE)][floor((float)y/BLOCKSIZE)] == 'x';
   }
 
   //NB: to be used in the same frame (of time) as collide, because the x value isn't used.
   public int topOfBlock(int x, int y){
-    return ceil(y/BLOCKSIZE - 1)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
+    return floor(y/BLOCKSIZE - 1)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
   }
 
   //NB: experimental...

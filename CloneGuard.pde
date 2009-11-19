@@ -1,6 +1,3 @@
-//It is currently possible to jump while not yet touching the ground.
-
-
 PImage sprite;
 PImage spriteMan[];
 int spriteHeight;
@@ -9,7 +6,7 @@ int spriteWidth;
 //MOVEMENT
 int xpos;
 int ypos;
-int xsp; //curret speed in the x direction.
+int xsp; //current speed in the x direction.
 int XVELOCITY; //the starting walk speed.
 boolean facingLeft; //ISSUE: 
 
@@ -37,15 +34,13 @@ void setup(){
   sprite = loadImage("images/1.png");
   spriteMan = new PImage[4];
   for(int i = 0; i < 4; i+=2){
-    spriteMan[i] = loadImage("images/a" + (i) + ".png");
-  }
-  for(int i = 0; i < 4; i+=2){
-    spriteMan[i+1] = loadImage("images/a" + (i) + "b.png");
+    spriteMan[i] = loadImage("images/a" + i + ".png");
+    spriteMan[i+1] = loadImage("images/a" + i + "b.png");
   }
   spriteHeight = 60;
   spriteWidth = 60;
 
-  xpos = 500;
+  xpos = 400;
   ypos = 200;
   xsp = 0;
   XVELOCITY = 5; 
@@ -100,18 +95,16 @@ void draw(){
   }
 
   //WALKING AND SIDE COLLISION
-  if((keys[0] || keys[1]) && !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2) + (int)(spriteWidth/2) + (xpos + xsp),ypos)){
+  if((keys[0] || keys[1]) && isBesideWall(xpos + xsp,ypos)){
     xpos += xsp;
   }
                           //right now the side collision and the floor collision are not agreeing with their xpos, this is causing
                           //...the ability to jump onto ledges that are higher than you can jump.
-  //JUMPING
+  //JUMPING AND GROUND COLLISION
   if(jumping)
     jumpspeed += 0.5;//0.5
   
-  //JUMPING AND GROUND COLLISION
-  if(level.isSolidBlock(xpos,(int)(ypos + jumpspeed + spriteHeight)) || 
-      level.isSolidBlock(xpos + spriteWidth,(int)(ypos + jumpspeed + spriteHeight))){
+  if(groundCollision(xpos,(int)(ypos + jumpspeed + spriteHeight))){
     ypos = level.topOfBlock(xpos,(int)(ypos + jumpspeed + spriteHeight));
     jumpspeed = 0;
     jumping = false;
@@ -214,3 +207,14 @@ void jump(){
     jumpspeed = JUMPVELOCITY;
   }
 }
+
+boolean isBesideWall(int x, int y){
+  return !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2 + spriteWidth/2) + x,y);
+}
+
+boolean groundCollision(double x, double y){
+  //checks left and right points of sprite
+  return level.isSolidBlock(x,y) || 
+      level.isSolidBlock(x + spriteWidth,y);
+}
+  
