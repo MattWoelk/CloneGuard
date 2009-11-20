@@ -2,6 +2,6 @@ x--------xxx
 x--------xxx
 xxx------xxx
 x--------xxx
-xxxxx---xxxx
+xxxx----xxxx
 xxxxx---xxxx
 xxxxxxxxxxxx

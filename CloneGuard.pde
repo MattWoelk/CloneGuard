@@ -40,8 +40,8 @@ void setup(){
   spriteHeight = 60;
   spriteWidth = 60;
 
-  xpos = 400;
-  ypos = 200;
+  xpos = 401;
+  ypos = 201;
   xsp = 0;
   XVELOCITY = 5; 
 
@@ -82,36 +82,28 @@ void draw(){
   level.paint();
   fill(255);
   rect(xpos,ypos,spriteWidth,spriteHeight);
-  if(facingLeft){
-    if(jumping)
-      image(spriteMan[2], xpos, ypos,spriteWidth,spriteHeight);
-    else
-      image(spriteMan[0], xpos, ypos,spriteWidth,spriteHeight);
-  }else{
-    if(jumping)
-      image(spriteMan[3], xpos,ypos,spriteWidth,spriteHeight);
-    else
-      image(spriteMan[1], xpos,ypos,spriteWidth,spriteHeight);
-  }
+  
+  drawSprite();
 
   //WALKING AND SIDE COLLISION
-  if((keys[0] || keys[1]) && isBesideWall(xpos + xsp,ypos)){
+  if((keys[0] || keys[1]) && isNotWall(xpos + xsp,ypos)){
     xpos += xsp;
   }
-                          //right now the side collision and the floor collision are not agreeing with their xpos, this is causing
-                          //...the ability to jump onto ledges that are higher than you can jump.
+                          //right now the side collision and the floor collision are not agreeing 
+                          //with their xpos, this is causing
+                          //the ability to jump onto ledges that are higher than you can jump.
   //JUMPING AND GROUND COLLISION
   if(jumping)
     jumpspeed += 0.5;//0.5
   
   if(groundCollision(xpos,(int)(ypos + jumpspeed + spriteHeight))){
-    ypos = level.topOfBlock(xpos,(int)(ypos + jumpspeed + spriteHeight));
+    ypos = level.roundUpToBlockTop((int)(ypos + jumpspeed + spriteHeight));
     jumpspeed = 0;
     jumping = false;
   }else{
     jumping = true;
+    ypos += jumpspeed;
   }
-  ypos += jumpspeed;
   
   //SHOOTING
   for(int i = 0; i < MAXSHOTS; i++){
@@ -208,8 +200,8 @@ void jump(){
   }
 }
 
-boolean isBesideWall(int x, int y){
-  return !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2 + spriteWidth/2) + x,y);
+boolean isNotWall(int x, int y){
+  return !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2 + spriteWidth/2) + x,y + spriteHeight -1);
 }
 
 boolean groundCollision(double x, double y){
@@ -218,3 +210,13 @@ boolean groundCollision(double x, double y){
       level.isSolidBlock(x + spriteWidth,y);
 }
   
+void drawSprite(){
+  if(facingLeft && jumping)
+    image(spriteMan[2], xpos, ypos,spriteWidth,spriteHeight);
+  if(facingLeft && !jumping)
+    image(spriteMan[0], xpos, ypos,spriteWidth,spriteHeight);
+  if(!facingLeft && jumping)
+    image(spriteMan[3], xpos,ypos,spriteWidth,spriteHeight);
+  if(!facingLeft && !jumping)
+    image(spriteMan[1], xpos,ypos,spriteWidth,spriteHeight);
+}
