@@ -7,7 +7,7 @@ public class Level{
   
   public Level(int num){
     BLOCKSIZE = 60;
-    blocks = new char[100][100];
+    blocks = new char[100][20];
 
     load(num);
   }
