@@ -17,7 +17,7 @@ public class Level{
     for(int i = 0; i < lines.length; i++){
       char temp[] = new char[100];
       for(int j = 0; j < lines[i].length(); j++){
-        //NB: X AND Y AND BACKWARDS...........
+        //NB: X AND Y ARE BACKWARDS...........
         blocks[j][i] = lines[i].charAt(j);
       }
     }
@@ -46,12 +46,11 @@ public class Level{
   
   //to see if the x,y point is within a block. 
   public boolean isSolidBlock(double x, double y){
-    //NB: (this will have to be changed if ever the character is falling REALLY fast....maybe)
+    //NB: (this will have to be changed if ever the character is falling REALLY fast)
     return blocks[floor((float)x/BLOCKSIZE)][floor((float)y/BLOCKSIZE)] == 'x';
   }
   
-  //NB: to be used in the same frame (of time) as collide, because the x value isn't used.
   public int roundUpToBlockTop(int y){
-    return floor(y/BLOCKSIZE)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
+    return floor(y/BLOCKSIZE)*BLOCKSIZE;
   }
 }
