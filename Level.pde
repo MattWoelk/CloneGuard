@@ -52,16 +52,6 @@ public class Level{
   
   //NB: to be used in the same frame (of time) as collide, because the x value isn't used.
   public int roundUpToBlockTop(int y){
-    return floor(y/BLOCKSIZE - 1)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
-  }
-  
-  //NB: experimental...
-  public int lSideOfBlock(int x, int y){
-    return ceil(y/BLOCKSIZE - 1)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
-  }
-
-  //NB: experimental...
-  public int rSideOfBlock(int x, int y){
-    return floor(y/BLOCKSIZE - 1)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
+    return floor(y/BLOCKSIZE)*BLOCKSIZE; //floor instead of ceil? (didn't make a difference before)
   }
 }

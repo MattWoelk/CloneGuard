@@ -37,8 +37,8 @@ void setup(){
     spriteMan[i] = loadImage("images/a" + i + ".png");
     spriteMan[i+1] = loadImage("images/a" + i + "b.png");
   }
-  spriteHeight = 60;
-  spriteWidth = 60;
+  spriteHeight = 40;
+  spriteWidth = 40;
 
   xpos = 401;
   ypos = 201;
@@ -89,17 +89,19 @@ void draw(){
   if((keys[0] || keys[1]) && isNotWall(xpos + xsp,ypos)){
     xpos += xsp;
   }
-                          //right now the side collision and the floor collision are not agreeing 
-                          //with their xpos, this is causing
-                          //the ability to jump onto ledges that are higher than you can jump.
-  //JUMPING AND GROUND COLLISION
+
+  //JUMPING AND GROUND AND CEILING COLLISION
   if(jumping)
     jumpspeed += 0.5;//0.5
   
-  if(groundCollision(xpos,(int)(ypos + jumpspeed + spriteHeight))){
-    ypos = level.roundUpToBlockTop((int)(ypos + jumpspeed + spriteHeight));
+  if(groundCollision(xpos,ypos)){
+    ypos = level.roundUpToBlockTop((int)(ypos + jumpspeed + spriteHeight)) - spriteHeight;
     jumpspeed = 0;
     jumping = false;
+  }else if(ceilingCollision(xpos,ypos)){
+    System.out.println("ceiling collision. speed: " + jumpspeed);
+    ypos = level.roundUpToBlockTop((int)(ypos + jumpspeed + spriteHeight));
+    jumpspeed = 0;
   }else{
     jumping = true;
     ypos += jumpspeed;
@@ -181,7 +183,7 @@ void keyReleased(){
 
 
 void shoot(){
-  shots[shotcount].set(xpos,ypos + 30,true);
+  shots[shotcount].set(xpos,ypos + (int)(spriteHeight/2),true);
   if(!facingLeft){
     shots[shotcount].shootRight(); //sets direction of shot.
     shots[shotcount].x += (int)spriteWidth/2;
@@ -206,8 +208,13 @@ boolean isNotWall(int x, int y){
 
 boolean groundCollision(double x, double y){
   //checks left and right points of sprite
-  return level.isSolidBlock(x,y) || 
-      level.isSolidBlock(x + spriteWidth,y);
+  return level.isSolidBlock(x,y + jumpspeed + spriteHeight) || 
+      level.isSolidBlock(x + spriteWidth,y + jumpspeed + spriteHeight);
+}
+
+boolean ceilingCollision(double x, double y){
+  return level.isSolidBlock(x,y + jumpspeed) || 
+      level.isSolidBlock(x + spriteWidth,y + jumpspeed);
 }
   
 void drawSprite(){
