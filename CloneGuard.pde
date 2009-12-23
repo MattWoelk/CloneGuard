@@ -6,8 +6,11 @@ int spriteWidth;
 //MOVEMENT
 int xpos;
 int ypos;
+int yvel;
+int yacc;
 int xsp; //current speed in the x direction.
 int XVELOCITY; //the starting walk speed.
+int YACCEL;
 boolean facingLeft; //ISSUE: 
 
 //SHOOTING
@@ -16,13 +19,8 @@ int shotcount;
 int MAXSHOTS;
 int shotTimer;
 
-//JUMPING
-boolean jumping;  //indicates whether the character is in the air or not.
-int JUMPVELOCITY; //the starting speed of the jump
-double jumpspeed; //the current speed of vertical movement
-
 //INPUT
-boolean keys[]; //I'd love to use hashes instead.
+int keys[]; //ints (should be booleans)
 
 //LEVEL
 Level level;
@@ -41,16 +39,20 @@ void setup(){
   spriteWidth = 40;
 
   xpos = 401;
-  ypos = 201;
   xsp = 0;
   XVELOCITY = 5; 
+  ypos = 201;
+  yvel = 0;
+  YACCEL = 1;
+  yacc = YACCEL;
+
 
   facingLeft = true;
 
   //INPUT
-  keys = new boolean[4];
+  keys = new int[4];
   for(int i = 0; i < 4; i++){
-    keys[i] = false;
+    keys[i] = 0;
   }
   
   //SHOOTING
@@ -61,11 +63,6 @@ void setup(){
     shots[i] = new Shot();
   }
   shotTimer = 100;
-  
-  //JUMPING
-  jumping = true;
-  JUMPVELOCITY = -10;
-  jumpspeed = 0;
   
   //LEVEL
   level = new Level(0);
@@ -86,32 +83,25 @@ void draw(){
   drawSprite();
 
   //WALKING AND SIDE COLLISION
-  if((keys[0] || keys[1]) && isNotWall(xpos + xsp,ypos)){
+  if((keys[0] > 0 || keys[1] > 0) && isNotWall(xpos + xsp,ypos)){
     xpos += xsp;
   }
 
-  //JUMPING AND GROUND AND CEILING COLLISION
-  if(jumping)
-    jumpspeed += 0.5;//0.5
-  
-  if(groundCollision(xpos,ypos)){
-    ypos = level.roundUpToBlockTop((int)(ypos + jumpspeed + spriteHeight)) - spriteHeight;
-    jumpspeed = 0;
-    jumping = false;
-  }else if(ceilingCollision(xpos,ypos)){
-    System.out.println("ceiling collision. speed: " + jumpspeed);
-    ypos = level.roundUpToBlockTop((int)(ypos + jumpspeed + spriteHeight));
-    jumpspeed = 0;
+  //JUMPING AND VERTICAL COLLISIONS
+  yvel += yacc;
+
+  if(!groundCollision(xpos,ypos)){ //if (not floor collision if we move)
+    ypos += yvel;
   }else{
-    jumping = true;
-    ypos += jumpspeed;
+    ypos = level.roundUpToBlockTop(ypos + yvel + spriteHeight) - spriteHeight; //stand on floor
+    yacc = 0;
   }
-  
+
   //SHOOTING
   for(int i = 0; i < MAXSHOTS; i++){
     shots[i].paint();
   }
-  if (keys[2]){
+  if (keys[2] > 0){
     shotTimer++;
     if (shotTimer > 9){
       shotTimer = 0;
@@ -125,27 +115,27 @@ void keyPressed(){
   char k = (char)key;
   switch(k){
   case 'j':
-    if(!keys[0]){
+    if(keys[0] == 0){
       xsp -= XVELOCITY;
     }
-    keys[0] = true;
+    keys[0] = 1;
     break;
   case 'l':
-    if(!keys[1]){
+    if(keys[1] == 0){
       xsp += XVELOCITY;
     }
-    keys[1] = true;
+    keys[1] = 1;
     break;
   case 'x':
-    if(!keys[2])
-      keys[2] = true;
+    if(keys[2] == 0)
+      keys[2] = 1;
     break;
   case 'z':
-    if(!keys[3]){
-      //jumping = true;
-      jump();
+    if(yacc == 0){
+      yacc = YACCEL;
+      yvel = -20;
     }
-    keys[3] = true;
+    keys[3] = 1;
     break;
   default:
     break;
@@ -157,24 +147,26 @@ void keyReleased(){
   char k = (char)key;
   switch(k){
   case 'j':
-    if(keys[0])
+    if(keys[0] > 0)
       xsp += XVELOCITY;
-    keys[0] = false;
+    keys[0] = 0;
     break;
   case 'l':
-    if(keys[1])
+    if(keys[1] > 0)
       xsp -= XVELOCITY;
-    keys[1] = false;
+    keys[1] = 0;
     break;
   case 'x':
-    if (keys[2] = true){
-      keys[2] = false;
+    if (keys[2] > 0){
+      keys[2] = 0;
       shotTimer = 10;
     }
     break;
   case 'z':
-    if(keys[3])
-    keys[3] = false;
+    keys[3] = 0;
+    if(yvel <= -5){ //set these to zero to have a completely immediate response
+      yvel = -5; //a velocity that still gives a little bit of arc
+    }
     break;
   default:
     break;
@@ -195,35 +187,32 @@ void shoot(){
 }
 
 
-void jump(){
-  if(!jumping){
-    jumping = true;
-    jumpspeed = JUMPVELOCITY;
-  }
-}
-
 boolean isNotWall(int x, int y){
   return !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2 + spriteWidth/2) + x,y + spriteHeight -1);
 }
 
+
 boolean groundCollision(double x, double y){
   //checks left and right points of sprite
-  return level.isSolidBlock(x,y + jumpspeed + spriteHeight) || 
-      level.isSolidBlock(x + spriteWidth,y + jumpspeed + spriteHeight);
+  return level.isSolidBlock(x, y + yvel + spriteHeight) || 
+    level.isSolidBlock(x + spriteWidth, y + yvel + spriteHeight);
 }
 
+
 boolean ceilingCollision(double x, double y){
-  return level.isSolidBlock(x,y + jumpspeed) || 
-      level.isSolidBlock(x + spriteWidth,y + jumpspeed);
+  //checks left and right points of sprite
+  return level.isSolidBlock(x,y + yvel) || 
+      level.isSolidBlock(x + spriteWidth,y + yvel);
 }
+
   
 void drawSprite(){
-  if(facingLeft && jumping)
+  if(facingLeft && yacc != 0)
     image(spriteMan[2], xpos, ypos,spriteWidth,spriteHeight);
-  if(facingLeft && !jumping)
+  if(facingLeft && yacc == 0)
     image(spriteMan[0], xpos, ypos,spriteWidth,spriteHeight);
-  if(!facingLeft && jumping)
+  if(!facingLeft && yacc != 0)
     image(spriteMan[3], xpos,ypos,spriteWidth,spriteHeight);
-  if(!facingLeft && !jumping)
+  if(!facingLeft && yacc == 0)
     image(spriteMan[1], xpos,ypos,spriteWidth,spriteHeight);
 }
