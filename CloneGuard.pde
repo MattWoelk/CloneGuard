@@ -83,7 +83,7 @@ void draw(){
   drawSprite();
 
   //WALKING AND SIDE COLLISION
-  if((keys[0] > 0 || keys[1] > 0) && isNotWall(xpos + xsp,ypos)){
+  if((keys[0] > 0 || keys[1] > 0) && !wallCollision(xpos,ypos)){
     xpos += xsp;
   }
 
@@ -196,6 +196,13 @@ boolean isNotWall(int x, int y){
   return !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2 + spriteWidth/2) + x,y + spriteHeight -1);
 }
 
+boolean wallCollision(int x, int y){
+  //checks to the side of all 4 corners
+  return level.isSolidBlock(x + xsp, y) ||
+    level.isSolidBlock(x + spriteWidth + xsp, y) ||
+    level.isSolidBlock(x + xsp, y + spriteHeight - 1) ||
+    level.isSolidBlock(x + spriteWidth + xsp, y + spriteHeight - 1);
+}
 
 boolean groundCollision(double x, double y){
   //checks left and right points of sprite
