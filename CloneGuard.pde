@@ -90,11 +90,16 @@ void draw(){
   //JUMPING AND VERTICAL COLLISIONS
   yvel += yacc;
 
-  if(!groundCollision(xpos,ypos)){ //if (not floor collision if we move)
+  if(!groundCollision(xpos,ypos) && !ceilingCollision(xpos,ypos)){ //if (if we move) there is no floor or ceiling collision
     ypos += yvel;
-  }else{
+    yacc = YACCEL;
+  }else if(ceilingCollision(xpos,ypos)){ //ceiling collision
+    ypos = level.roundUpToBlockTop(ypos) + 1; //align top of sprite with ceiling
+    yvel = 0;
+  }else{ //floor collision
     ypos = level.roundUpToBlockTop(ypos + yvel + spriteHeight) - spriteHeight; //stand on floor
     yacc = 0;
+    yvel = 0;
   }
 
   //SHOOTING
