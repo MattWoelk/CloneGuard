@@ -55,17 +55,17 @@ void setup(){
     keys[i] = 0;
   }
   
+  //LEVEL
+  level = new Level(0);
+  
   //SHOOTING
   MAXSHOTS = 30;
   shots = new Shot[MAXSHOTS];
   shotcount = 0;
   for(int i = 0; i < MAXSHOTS; i++){
-    shots[i] = new Shot();
+    shots[i] = new Shot(level);
   }
   shotTimer = 100;
-  
-  //LEVEL
-  level = new Level(0);
 }
 
 
@@ -192,10 +192,6 @@ void shoot(){
 }
 
 
-boolean isNotWall(int x, int y){
-  return !level.isSolidBlock((int)(Math.signum(xsp)*spriteWidth/2 + spriteWidth/2) + x,y + spriteHeight -1);
-}
-
 boolean wallCollision(int x, int y){
   //checks to the side of all 4 corners
   return level.isSolidBlock(x + xsp, y) ||
@@ -203,6 +199,7 @@ boolean wallCollision(int x, int y){
     level.isSolidBlock(x + xsp, y + spriteHeight - 1) ||
     level.isSolidBlock(x + spriteWidth + xsp, y + spriteHeight - 1);
 }
+
 
 boolean groundCollision(double x, double y){
   //checks left and right points of sprite
