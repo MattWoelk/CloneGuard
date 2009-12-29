@@ -53,8 +53,8 @@ void setup(){
   keys = new int[4];
   for(int i = 0; i < 4; i++){
     keys[i] = 0;
-  }
-  
+  } 
+
   //LEVEL
   level = new Level(0);
   
@@ -66,7 +66,7 @@ void setup(){
     shots[i] = new Shot(level);
   }
   shotTimer = 100;
-}
+ }
 
 
 void draw(){
