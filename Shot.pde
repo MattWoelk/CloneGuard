@@ -43,7 +43,7 @@ public class Shot{
       x = level.roundToBlockSide(x,sign(SPEED));
     }
     //dies if off the screen
-    if(x < -60 || x > width)
+    if(x < -60 || x > level.levelWidth())
       //kill the beam
       active = false;
 

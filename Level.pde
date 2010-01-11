@@ -46,7 +46,7 @@ public class Level{
   
   //to see if the x,y point is within a block. 
   public boolean isSolidBlock(double x, double y){
-    if(x < 0 || x > width - 1)
+    if(x < 0 || x > levelWidth() - 1)
       return true;
     if(y < 0)
       return false;
@@ -61,5 +61,9 @@ public class Level{
   //direction should be 1 or -1
   public int roundToBlockSide(int x, int direction){
     return floor(x/BLOCKSIZE)*BLOCKSIZE + BLOCKSIZE/2 - direction*BLOCKSIZE/2;
+  }
+
+  public int levelWidth(){
+    return blength*BLOCKSIZE;
   }
 }

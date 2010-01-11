@@ -70,6 +70,7 @@ void setup(){
 
 
 void draw(){
+  translate(0 -xpos + (width/2), 0 - ypos + (height/2));
   if(xsp > 0)
     facingLeft = false;
   else if (xsp < 0)
