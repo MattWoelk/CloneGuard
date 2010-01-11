@@ -1,10 +1,12 @@
 public class Shot{
   boolean active;
+  int deathCount;
   public int x;
   public int y;
   int SPEED;
   int WIDTH;
   PImage img;
+  PImage pow[];
   Level level;
   
   public Shot(Level level){
@@ -14,6 +16,11 @@ public class Shot{
     SPEED = -8;
     WIDTH = 60;
     img = loadImage("images/peew.png");
+    pow = new PImage[6];
+    for(int i = 0; i < 6; i++){
+      pow[i] = loadImage("Images/puffg" + (5 - i) + ".png");
+    }
+    deathCount = 0;
   }
 
   public void shootRight(){
@@ -32,6 +39,7 @@ public class Shot{
     if(level.isSolidBlock(x,y) || level.isSolidBlock(x + WIDTH,y)){
       //kill the beam
       active = false;
+      deathCount = 6;
       x = level.roundToBlockSide(x,sign(SPEED));
     }
     //dies if off the screen
@@ -40,7 +48,10 @@ public class Shot{
       active = false;
 
       image(img, x,y);
-    } 
+    }else if(deathCount > 0){
+      image(pow[deathCount - 1],x-20+(WIDTH/2)+sign(SPEED)*(WIDTH/2),y-20);
+      deathCount -= 1;
+    }
   }
 
   public void set(int x, int y, boolean active){
