@@ -2,6 +2,7 @@ PImage sprite;
 PImage spriteMan[];
 int spriteHeight;
 int spriteWidth;
+int drawWidth;
 
 //MOVEMENT
 int xpos;
@@ -36,7 +37,8 @@ void setup(){
     spriteMan[i+1] = loadImage("images/a" + i + "b.png");
   }
   spriteHeight = 40;
-  spriteWidth = 40;
+  spriteWidth = 20;
+  drawWidth = 40;
 
   xpos = 401;
   xsp = 0;
@@ -79,7 +81,7 @@ void draw(){
   background(000);
   level.paint();
   fill(255);
-  rect(xpos,ypos,spriteWidth,spriteHeight);
+  //rect(xpos,ypos,spriteWidth,spriteHeight);
   
   drawSprite();
 
@@ -218,11 +220,11 @@ boolean ceilingCollision(double x, double y){
   
 void drawSprite(){
   if(facingLeft && yacc != 0)
-    image(spriteMan[2], xpos, ypos,spriteWidth,spriteHeight);
+    image(spriteMan[2], xpos - spriteWidth/2, ypos,drawWidth,spriteHeight);
   if(facingLeft && yacc == 0)
-    image(spriteMan[0], xpos, ypos,spriteWidth,spriteHeight);
+    image(spriteMan[0], xpos - spriteWidth/2, ypos,drawWidth,spriteHeight);
   if(!facingLeft && yacc != 0)
-    image(spriteMan[3], xpos,ypos,spriteWidth,spriteHeight);
+    image(spriteMan[3], xpos - spriteWidth/2,ypos,drawWidth,spriteHeight);
   if(!facingLeft && yacc == 0)
-    image(spriteMan[1], xpos,ypos,spriteWidth,spriteHeight);
+    image(spriteMan[1], xpos - spriteWidth/2,ypos,drawWidth,spriteHeight);
 }
