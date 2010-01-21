@@ -59,17 +59,26 @@ public class Shot{
     if(active){
       x += SPEED;
 
-    //dies if it hits a wall
-    if(level.isSolidBlock(x,y) || level.isSolidBlock(x + WIDTH,y)){
-      //kill the beam
-      active = false;
-      deathCount = 6;
-      x = level.roundToBlockSide(x,sign(SPEED));
-    }
-    //dies if off the screen
-    if(x < -60 || x > level.levelWidth())
-      //kill the beam
-      active = false;
+      //dies if it hits an enemy
+      for(int i = 0; i < enemyNum; i++){
+        if(enemies[i].isShot(x-20+(WIDTH/2)+sign(SPEED)*(WIDTH/2),y-20 + level.BLOCKSIZE)){
+          System.out.println("This Ha!" + i + "");
+          active = false;
+          deathCount = 6;
+        }
+      }
+
+      //dies if it hits a wall
+      if(level.isSolidBlock(x,y) || level.isSolidBlock(x + WIDTH,y)){
+        //kill the beam
+        active = false;
+        deathCount = 6;
+        x = level.roundToBlockSide(x,sign(SPEED));
+      }
+      //dies if off the screen
+      if(x < -60 || x > level.levelWidth())
+        //kill the beam
+        active = false;
 
       if(facingLeft)
         image(animl[c], x, y);

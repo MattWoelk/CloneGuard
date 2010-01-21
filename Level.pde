@@ -1,15 +1,20 @@
 public class Level{
   String lines[];
   char blocks[][]; 
-  int BLOCKSIZE;
+  public int BLOCKSIZE;
   int sizes[]; //numbers of blocks in each row.
   int blength; //number of blocks horizontal.
+  public int originx;
+  public int originy;
+  CloneGuard game;
   
-  public Level(int num){
+  public Level(int num, CloneGuard game){
     BLOCKSIZE = 60;
     blocks = new char[100][20];
 
     load(num);
+    this.game = game;
+    initPaint();
   }
   
   public void load(int num){
@@ -27,6 +32,29 @@ public class Level{
       sizes[i] = blocks[i].length;
     }
   }
+
+  public void initPaint(){
+    int blength = blocks.length;
+    //IMP: only draw what's on-screen?
+    for(int i = 0; i < blength; i++){
+      for(int j = 0; j < sizes[i]; j++){
+        if(blocks[i][j] == '-'){
+          fill(255);
+        }else if(blocks[i][j] == 'x'){
+          fill(100);
+        }else if(blocks[i][j] == 'o'){
+          originx = i*BLOCKSIZE;
+          originy = j*BLOCKSIZE;
+          fill(255);
+        }else if(blocks[i][j] == 'E'){
+          fill(0,50,50);
+          game.addEnemy(i*BLOCKSIZE,(j+1)*BLOCKSIZE);
+        }else
+          fill(0);
+        rect(i*BLOCKSIZE,j*BLOCKSIZE,BLOCKSIZE,BLOCKSIZE);
+      }
+    }
+  }
   
   public void paint(){
     int blength = blocks.length;
@@ -37,6 +65,12 @@ public class Level{
           fill(255);
         }else if(blocks[i][j] == 'x'){
           fill(100);
+        }else if(blocks[i][j] == 'o'){
+          originx = i*BLOCKSIZE;
+          originy = j*BLOCKSIZE;
+          fill(255);
+        }else if(blocks[i][j] == 'E'){
+          fill(0,50,50);
         }else
           fill(0);
         rect(i*BLOCKSIZE,j*BLOCKSIZE,BLOCKSIZE,BLOCKSIZE);

@@ -26,8 +26,16 @@ int keys[]; //ints (should be booleans)
 //LEVEL
 Level level;
 
+//ENEMIES
+public Enemy enemies[];
+public int enemyNum;
+
 void setup(){
   size(600,400);
+
+  //ENEMY
+  enemyNum = 0;
+  enemies = new Enemy[20];
 
   //SPRITE
   sprite = loadImage("images/1.png");
@@ -40,10 +48,10 @@ void setup(){
   spriteWidth = 20;
   drawWidth = 40;
 
-  xpos = 401;
+  //xpos = 401;
   xsp = 0;
   XVELOCITY = 5; 
-  ypos = 201;
+  //ypos = 201;
   yvel = 0;
   YACCEL = 1;
   yacc = YACCEL;
@@ -58,7 +66,12 @@ void setup(){
   } 
 
   //LEVEL
-  level = new Level(0);
+  level = new Level(0, this);
+  level.paint();
+
+  //Position (based on level)
+  xpos = level.originx;
+  ypos = level.originy;
   
   //SHOOTING
   MAXSHOTS = 30;
@@ -115,6 +128,10 @@ void draw(){
       shotTimer = 0;
       shoot();
     }
+  }
+
+  for(int i = 0; i < enemyNum; i++){
+    enemies[i].paint();
   }
 }
 
@@ -227,4 +244,16 @@ void drawSprite(){
     image(spriteMan[3], xpos - spriteWidth/2,ypos,drawWidth,spriteHeight);
   if(!facingLeft && yacc == 0)
     image(spriteMan[1], xpos - spriteWidth/2,ypos,drawWidth,spriteHeight);
+}
+
+void addEnemy(int x, int y){
+  if(enemies.length >= enemyNum){
+    Enemy temp[] = new Enemy[enemyNum + 5];
+    for(int i = 0; i < enemyNum; i++){
+      temp[i] = enemies[i];
+    }
+    enemies = temp;
+  }
+  enemies[enemyNum] = new Enemy(x,y);
+  enemyNum += 1;
 }
