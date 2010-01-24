@@ -33,8 +33,9 @@ public int enemyNum;
 void setup(){
   size(600,400);
 
-  //ENEMY
   enemyNum = 0;
+  level = new Level(0, this);
+  //ENEMY
   enemies = new Enemy[20];
 
   //SPRITE
@@ -66,7 +67,7 @@ void setup(){
   } 
 
   //LEVEL
-  level = new Level(0, this);
+  level.initPaint();
   level.paint();
 
   //Position (based on level)
@@ -99,17 +100,17 @@ void draw(){
   drawSprite();
 
   //WALKING AND SIDE COLLISION
-  if((keys[0] > 0 || keys[1] > 0) && !wallCollision(xpos,ypos)){
+  if((keys[0] > 0 || keys[1] > 0) && !level.wallCollision(xpos + xsp,ypos,spriteWidth,spriteHeight)){
     xpos += xsp;
   }
 
   //JUMPING AND VERTICAL COLLISIONS
   yvel += yacc;
 
-  if(!groundCollision(xpos,ypos) && !ceilingCollision(xpos,ypos)){ //if (if we move) there is no floor or ceiling collision
+  if(!level.groundCollision(xpos,ypos + yvel,spriteWidth,spriteHeight) && !level.ceilingCollision(xpos,ypos + yvel,spriteWidth)){ //if (if we move) there is no floor or ceiling collision
     ypos += yvel;
     yacc = YACCEL;
-  }else if(ceilingCollision(xpos,ypos)){ //ceiling collision
+  }else if(level.ceilingCollision(xpos,ypos + yvel,spriteWidth)){ //ceiling collision
     ypos = level.roundUpToBlockTop(ypos) + 1; //align top of sprite with ceiling
     yvel = 0;
   }else{ //floor collision
@@ -156,6 +157,7 @@ void keyPressed(){
       keys[2] = 1;
     break;
   case 'z':
+    //JUMP!
     if(yacc == 0){
       yacc = YACCEL;
       yvel = -20;
@@ -188,6 +190,7 @@ void keyReleased(){
     }
     break;
   case 'z':
+    //STOP ACCELERATING UPWARDS (JUMPING)
     keys[3] = 0;
     if(yvel <= -5){ //set these to zero to have a completely immediate response
       yvel = -5; //a velocity that still gives a little bit of arc
@@ -211,29 +214,6 @@ void shoot(){
   shotcount = (shotcount + 1) % MAXSHOTS;
 }
 
-
-boolean wallCollision(int x, int y){
-  //checks to the side of all 4 corners
-  return level.isSolidBlock(x + xsp, y) ||
-    level.isSolidBlock(x + spriteWidth + xsp, y) ||
-    level.isSolidBlock(x + xsp, y + spriteHeight - 1) ||
-    level.isSolidBlock(x + spriteWidth + xsp, y + spriteHeight - 1);
-}
-
-
-boolean groundCollision(double x, double y){
-  //checks left and right points of sprite
-  return level.isSolidBlock(x, y + yvel + spriteHeight) || 
-    level.isSolidBlock(x + spriteWidth, y + yvel + spriteHeight);
-}
-
-
-boolean ceilingCollision(double x, double y){
-  //checks left and right points of sprite
-  return level.isSolidBlock(x,y + yvel) || 
-      level.isSolidBlock(x + spriteWidth,y + yvel);
-}
-
   
 void drawSprite(){
   if(facingLeft && yacc != 0)
@@ -254,6 +234,6 @@ void addEnemy(int x, int y){
     }
     enemies = temp;
   }
-  enemies[enemyNum] = new Enemy(x,y);
+  enemies[enemyNum] = new Enemy(x,y,level);
   enemyNum += 1;
 }

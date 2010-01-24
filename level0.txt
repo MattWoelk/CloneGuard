@@ -1,7 +1,7 @@
 x--------xxx-----------x
 x--------xxx-----------x
-xxx------xxx-----------x
-xo-E---------------x---x
+xxx------xxx-E---------x
+xo-E----E-----E----x---x
 xxxx----xxxx----E--x---x
-xxxxx---xxxx-------xx--x
+xxxxx---xxxx------Exx--x
 xxxxxxxxxxxxxxxxxxxxxxxx

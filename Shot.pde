@@ -61,8 +61,7 @@ public class Shot{
 
       //dies if it hits an enemy
       for(int i = 0; i < enemyNum; i++){
-        if(enemies[i].isShot(x-20+(WIDTH/2)+sign(SPEED)*(WIDTH/2),y-20 + level.BLOCKSIZE)){
-          System.out.println("This Ha!" + i + "");
+        if(enemies[i].active && enemies[i].isShot(x-20+(WIDTH/2)+sign(SPEED)*(WIDTH/2),y)){
           active = false;
           deathCount = 6;
         }

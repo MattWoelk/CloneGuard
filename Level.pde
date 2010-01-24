@@ -14,7 +14,6 @@ public class Level{
 
     load(num);
     this.game = game;
-    initPaint();
   }
   
   public void load(int num){
@@ -35,7 +34,7 @@ public class Level{
 
   public void initPaint(){
     int blength = blocks.length;
-    //IMP: only draw what's on-screen?
+    //IMPR: only draw what's on-screen?
     for(int i = 0; i < blength; i++){
       for(int j = 0; j < sizes[i]; j++){
         if(blocks[i][j] == '-'){
@@ -58,7 +57,7 @@ public class Level{
   
   public void paint(){
     int blength = blocks.length;
-    //IMP: only draw what's on-screen?
+    //IMPR: only draw what's on-screen?
     for(int i = 0; i < blength; i++){
       for(int j = 0; j < sizes[i]; j++){
         if(blocks[i][j] == '-'){
@@ -99,5 +98,25 @@ public class Level{
 
   public int levelWidth(){
     return blength*BLOCKSIZE;
+  }
+
+  boolean wallCollision(int x, int y, int width, int height){
+    //checks to the side of all 4 corners
+    return level.isSolidBlock(x, y) ||
+      level.isSolidBlock(x + width, y) ||
+      level.isSolidBlock(x, y + height - 1) ||
+      level.isSolidBlock(x + width, y + height - 1);
+  }
+
+  boolean ceilingCollision(double x, double y, int width){
+    //checks left and right points of sprite
+    return level.isSolidBlock(x,y) || 
+      level.isSolidBlock(x + width,y);
+  }
+
+  boolean groundCollision(double x, double y, int width, int height){
+    //checks left and right points of sprite
+    return level.isSolidBlock(x, y + height) || 
+      level.isSolidBlock(x + width, y + height);
   }
 }
